@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relais — Suivi Hypernet</title>
+<meta name="theme-color" content="#0a0e14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="eyebrow">New Eden // Hypernet Relay</div>
+  <h1>Suivi des relais</h1>
+</header>
+
+<div id="perm-banner" class="perm-banner" style="display:none">
+  <span>Active les notifications pour être prévenu quand un relais se termine.</span>
+  <button id="perm-btn">Activer</button>
+</div>
+
+<div id="auth-banner" class="perm-banner">
+  <span id="auth-status">Personnage non connecté.</span>
+  <button id="auth-btn">Connecter</button>
+</div>
+
+<div class="summary-bar">
+  <div class="summary-chip">
+    <div class="label">Relais actifs</div>
+    <div class="value" id="chip-active">0</div>
+  </div>
+  <div class="summary-chip">
+    <div class="label">Marge totale</div>
+    <div class="value gold" id="chip-margin">0 ISK</div>
+  </div>
+  <div class="summary-chip">
+    <div class="label">Tickets restants</div>
+    <div class="value cyan" id="chip-tickets-left">0</div>
+  </div>
+</div>
+
+<main id="app-main">
+  <div id="empty-state" class="empty-state" style="display:none">
+    <div class="glyph">◎</div>
+    <div>Aucun relais suivi pour l’instant.<br>Ajoute ton premier relais avec le bouton +.</div>
+  </div>
+
+  <div id="section-core-txns" style="display:none">
+    <div class="section-title">HyperCores achetés (taxe de création)</div>
+    <div id="list-core-txns"></div>
+  </div>
+
+  <div id="section-txns" style="display:none">
+    <div class="section-title">Transactions Hypernet détectées</div>
+    <div id="list-txns"></div>
+  </div>
+
+  <div class="section-title">En cours</div>
+  <div id="list-active"></div>
+
+  <div id="section-done" style="display:none">
+    <div class="section-title">Terminés</div>
+    <div id="list-done"></div>
+  </div>
+</main>
+
+<button class="fab" id="fab-add" aria-label="Ajouter un relais">+</button>
+
+<div class="sheet-backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <h2 id="sheet-title">Nouveau relais</h2>
+  <form id="sheet-form">
+    <div class="field">
+      <label for="f-name">Nom du relais</label>
+      <input type="text" id="f-name" placeholder="ex : Relay Faction BS #3" required>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-total">Tickets total</label>
+        <input type="number" id="f-total" min="1" inputmode="numeric" required>
+      </div>
+      <div class="field">
+        <label for="f-sold">Tickets vendus</label>
+        <input type="number" id="f-sold" min="0" inputmode="numeric" required>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-price">Prix / ticket (ISK)</label>
+        <input type="number" id="f-price" min="0" inputmode="numeric" required>
+      </div>
+      <div class="field">
+        <label for="f-prize">Coût du prix (ISK)</label>
+        <input type="number" id="f-prize" min="0" inputmode="numeric">
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-tax">Taxe de création — HyperCores (ISK)</label>
+      <input type="number" id="f-tax" min="0" inputmode="numeric" placeholder="rempli auto si détecté">
+    </div>
+    <div class="sheet-actions">
+      <button type="button" class="btn-secondary" id="sheet-cancel">Annuler</button>
+      <button type="submit" class="btn-primary">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
