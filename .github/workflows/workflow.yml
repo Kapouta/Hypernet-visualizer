@@ -1,0 +1,51 @@
+name: Deploy PWA to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate config.js from secrets
+        env:
+          EVE_CLIENT_ID: ${{ secrets.EVE_CLIENT_ID }}
+          EVE_CALLBACK_URL: ${{ secrets.EVE_CALLBACK_URL }}
+        run: |
+          if [ -z "$EVE_CLIENT_ID" ] || [ -z "$EVE_CALLBACK_URL" ]; then
+            echo "::error::Il manque EVE_CLIENT_ID et/ou EVE_CALLBACK_URL dans Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          sed \
+            -e "s|__EVE_CLIENT_ID__|${EVE_CLIENT_ID}|g" \
+            -e "s|__EVE_CALLBACK_URL__|${EVE_CALLBACK_URL}|g" \
+            config.template.js > config.js
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
