@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connexion…</title>
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+</head>
+<body>
+<div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:12px;">
+  <div class="eyebrow mono" style="color:var(--gold)">EVE SSO</div>
+  <div id="status">Connexion en cours…</div>
+</div>
+<script src="auth.js"></script>
+<script>
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const state = params.get("state");
+  const expectedState = sessionStorage.getItem("eve-sso-state");
+  const statusEl = document.getElementById("status");
+
+  if (!code || state !== expectedState) {
+    statusEl.textContent = "Échec de la connexion (état invalide). Retourne à l'app et réessaie.";
+    return;
+  }
+
+  try {
+    await exchangeCode(code);
+    statusEl.textContent = "Connecté. Redirection…";
+    window.location.href = "index.html";
+  } catch (e) {
+    statusEl.textContent = "Erreur : " + e.message;
+  }
+})();
+</script>
+</body>
+</html>
