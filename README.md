@@ -8,10 +8,13 @@ gratuit : **GitHub Pages**.
 
 1. Crée un repo GitHub (public ou privé), par ex. `relais-hypernet`.
 2. Mets tous les fichiers de ce dossier à la racine du repo (`index.html`,
-   `app.js`, `auth.js`, `config.js`, `callback.html`, `style.css`,
-   `manifest.json`, `sw.js`, le dossier `icons/`).
-3. Repo → **Settings → Pages** → Source : `main` branch, dossier `/ (root)`.
-4. Après 1-2 min, ton app est en ligne sur :
+   `app.js`, `auth.js`, `config.template.js`, `callback.html`, `style.css`,
+   `manifest.json`, `sw.js`, `.gitignore`, `.github/workflows/deploy.yml`,
+   le dossier `icons/`). Ne crée pas `config.js` toi-même, il est généré
+   automatiquement (voir étape 3).
+3. Repo → **Settings → Pages** → tu configureras la Source à l'étape 3
+   ci-dessous (à faire APRÈS avoir ajouté les secrets).
+4. Une fois le workflow lancé (étape 3), ton app est en ligne sur :
    `https://TON_PSEUDO.github.io/relais-hypernet/`
 
 ## 2. Créer ton application EVE (pour te connecter avec ton perso)
@@ -26,17 +29,26 @@ gratuit : **GitHub Pages**.
 7. Crée l'appli, puis copie le **Client ID** affiché (pas besoin du secret,
    l'app utilise le flux PKCE, sans secret).
 
-## 3. Configurer l'app
+## 3. Mettre le Client ID dans les Secrets GitHub (pas dans le code)
 
-Ouvre `config.js` dans le repo et remplace :
+Le fichier `config.js` n'est plus committé dans le repo : il est généré à
+chaque déploiement par un workflow GitHub Actions à partir de **Secrets**,
+donc ton Client ID n'apparaît jamais en clair dans le code source.
 
-```js
-CLIENT_ID: "COLLE_TON_CLIENT_ID_ICI",
-CALLBACK_URL: "https://TON_PSEUDO.github.io/relais-hypernet/callback.html",
-```
+1. Dans ton repo → **Settings → Secrets and variables → Actions**.
+2. **New repository secret** → nom `EVE_CLIENT_ID` → colle ton Client ID.
+3. **New repository secret** → nom `EVE_CALLBACK_URL` → colle
+   `https://TON_PSEUDO.github.io/relais-hypernet/callback.html`
+   (doit être identique à ce que tu as mis à l'étape 2.6).
+4. Repo → **Settings → Pages** → Source : choisis **GitHub Actions**
+   (et non plus "Deploy from a branch").
+5. Fais un petit commit (ou lance le workflow manuellement depuis l'onglet
+   **Actions → Deploy PWA to GitHub Pages → Run workflow**). Le workflow
+   génère `config.js` à partir des secrets et publie le site.
 
-par tes vraies valeurs, puis commit/push. Attends que GitHub Pages redéploie
-(1-2 min).
+Le fichier `config.template.js` (versionné, sans vraie valeur) sert de
+modèle ; `config.js` (avec ton vrai Client ID) n'existe que dans le build
+déployé, jamais dans l'historique Git.
 
 ## 4. Installer sur ton téléphone Android
 
